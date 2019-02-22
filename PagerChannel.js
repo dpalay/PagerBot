@@ -11,10 +11,22 @@ class PagerChannel {
         this.channelID = channelID;
         this.roleID = roleID;
         this.message = message.replace("$role$", roleID).replace("$channel$", channelID);
+        this._lastmessage;
     }
 
     toString() {
         return this.message;
+    }
+
+    get lastmessage() {
+        return this._lastmessage
+    }
+
+    set lastmessage(message) {
+        if (this._lastmessage) {
+            _lastmessage.delete().catch(err => console.err(err))
+        }
+        this._lastmessage = message;
     }
 
 }

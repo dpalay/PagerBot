@@ -14,20 +14,22 @@ const eventsToDisable = ['channelCreate', 'channelDelete', 'channelPinsUpdate', 
     'roleCreate', 'roleDelete', 'roleUpdate', 'typingStart', 'typingStop', 'userNoteUpdate', 'userUpdate', 'voiceStateUpdate'
 ];
 
-let Discord = require("discord.js");
-let client = new Discord.Client({ disabledEvents: eventsToDisable });
+const Discord = require("discord.js");
+const client = new Discord.Client({ disabledEvents: eventsToDisable });
 
 
 function stripHyphen(string) {
     return string.split('-').join("")
 }
 
+/** @type {Discord.Collection<Discord.Snowflake, PagerChannel>} */
 const channels = new Discord.Collection();
 
 client.once('ready', () => {
     // Load custom from the file
     AdditionalChanToRoles.forEach(additional => {
         channels.set(additional.channelID, new PagerChannel(additional))
+        console.log(`Adding Role From File. Role:${additional.roldID}, Channel:${additional.channeLID}`)
     });
     // load matching from the guilds
     // for each guild
@@ -58,18 +60,12 @@ client.on('message', message => {
     if (message.content) {
         if (message.author.bot) return;
         if (message.content.startsWith("!") || message.content.startsWith("?")) return;
-        message.channel.fetchMessages({ limit: 4 }).then(messages => {
-            let msg_array = messages.array();
-            msg_array = msg_array.filter(message => message.author.id === client.user.id);
-            msg_array.map(message => message.delete().catch(console.error));
-        });
-        if (message.channel.id === "293580875176738817") {
-            message.channel.send(["<@&" + chanToRole[message.channel.id] + "> We strongly encourage everyone to utilize The Silph Road Nest Atlas for nest reporting and lookup but please feel free to note any exceptionally good nests here, https:\/\/thesilphroad.com/atlas#11.46/43.082/-89.37"]);
-        } else if (message.channel.id === "291795781885886464") {
-            message.channel.send("Please be sure to check out the server FAQ at http:\/\/madpogotracker.info/faq and/or <#301194349977534465> for current server status.  <@&" + chanToRole[message.channel.id] + ">");
-        } else {
-            message.channel.send("New message! <@&" + chanToRole[message.channel.id] + ">");
+        if (channels.has(message.channel.id)) {
+            message.channel.send(channels.get(message.channel.id).toString()).then((newMessage) => {
+                channels.get(message.channel.id).lastmessage(newMessage)
+            });
         }
+
     }
 });
 
