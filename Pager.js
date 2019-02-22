@@ -46,7 +46,7 @@ client.once('ready', () => {
                         if (!channels.has(channel.id)) {
                             channels.set(channel.id, new PagerChannel({ channelID: channel.id, roleID: role.id }));
                         }
-                        console.log(`Adding Role:${guild.roles.get(role.id)} to ${channel}`);
+                        console.log(`Adding Role:${guild.roles.get(role.id).name} to ${channel.name}`);
                     }
                 });
             }
