@@ -1,4 +1,4 @@
-module.export = [
+module.exports = [
     // {channelID: "Channel ID", roleID: "Role ID", message: "Message using $role$ and/or $channel$"},
     { channelID: "1234123", roleID: "343243241", message: "Ping for the admin channel. $role$" } //#channel-name-for-documentation   
 ]
