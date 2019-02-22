@@ -1,0 +1,22 @@
+{
+  "name": "pagerbot",
+  "version": "1.0.0",
+  "description": "Mentions a role based on the channel name in a response to user messages",
+  "main": "Pager.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dpalay/PagerBot.git"
+  },
+  "author": "Dave Palay (lordthanda@gmail.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dpalay/PagerBot/issues"
+  },
+  "homepage": "https://github.com/dpalay/PagerBot#readme",
+  "dependencies": {
+    "dotenv": "^6.2.0"
+  }
+}
