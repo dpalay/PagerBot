@@ -24,7 +24,7 @@ class PagerChannel {
 
     set lastmessage(message) {
         if (this._lastmessage) {
-            _lastmessage.delete().catch(err => console.err(err))
+            this._lastmessage.delete().catch(err => console.err(err))
         }
         this._lastmessage = message;
     }

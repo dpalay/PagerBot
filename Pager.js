@@ -29,7 +29,7 @@ client.once('ready', () => {
     // Load custom from the file
     AdditionalChanToRoles.forEach(additional => {
         channels.set(additional.channelID, new PagerChannel(additional))
-        console.log(`Adding Role From File. Role:${additional.roldID}, Channel:${additional.channeLID}`)
+        console.log(`Adding Role From File. Role:${additional.roleID}, Channel:${additional.channelID}`)
     });
     // load matching from the guilds
     // for each guild
@@ -59,10 +59,10 @@ client.once('ready', () => {
 client.on('message', message => {
     if (message.content) {
         if (message.author.bot) return;
-        if (message.content.startsWith("!") || message.content.startsWith("?")) return;
+        if (message.content.startsWith("!") || message.content.startsWith("?") || message.content.startsWith(".")) return;
         if (channels.has(message.channel.id)) {
             message.channel.send(channels.get(message.channel.id).toString()).then((newMessage) => {
-                channels.get(message.channel.id).lastmessage(newMessage)
+                channels.get(message.channel.id).lastmessage = newMessage;
             });
         }
 
