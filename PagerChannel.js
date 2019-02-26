@@ -6,16 +6,24 @@ class PagerChannel {
      * @param {string} roleID associated role
      * @param {string} message Message to display.  use $role$ to represent role id and $channel$ to represent channel id
      */
-    constructor({ channelID = "", roleID = "", message = `New message! $role$` }) {
+    constructor(client, { channelID = "", roleID = "", message = `New message! $role$`, messageID = "" }) {
 
+        this.client = client
         this.channelID = channelID;
         this.roleID = roleID;
         this.message = message.replace("$role$", `<@&${roleID}>`).replace("$channel$", `<#${channelID}>`);
+        this.messageID = messageID;
         this._lastmessage;
+        if (messageID) { this.client.channels.get(this.channelID).fetchMessage(this.messageID).then((message) => this.lastmessage = message).catch(err => console.error(err)); }
     }
+
 
     toString() {
         return this.message;
+    }
+
+    toEnmap() {
+        return { channelID: this.channelID, roleID: this.roleID, message: this.message, messageID: this.lastmessage.id }
     }
 
     get lastmessage() {

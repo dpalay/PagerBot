@@ -1,6 +1,7 @@
 const AdditionalChanToRoles = require('./AdditionalChanToRole.js')
 const PagerChannel = require('./PagerChannel.js')
 const result = require('dotenv').config()
+const Enmap = require('enmap');
 
 if (result.error) {
     throw result.error
@@ -23,13 +24,27 @@ function stripHyphen(string) {
 }
 
 /** @type {Discord.Collection<Discord.Snowflake, PagerChannel>} */
+const channelStorage = new Enmap({ name: "PagerChannels" });
 const channels = new Discord.Collection();
 
-client.once('ready', () => {
-    // Load custom from the file
+
+client.once('ready', async() => {
+    //Load from Enmap
+    await channelStorage.defer;
+    channelStorage.forEach(channelData => channels.set(channelData.channelID, new PagerChannel(client, channelData)));
+
+    // Load new custom values from the file
     AdditionalChanToRoles.forEach(additional => {
-        channels.set(additional.channelID, new PagerChannel(additional))
-        console.log(`Adding Role From File. Role:${additional.roleID}, Channel:${additional.channelID}`)
+        //it wasn't in the enmap, so load it fresh
+        if (!channels.has(additional.channelID)) {
+            channels.set(additional.channelID, new PagerChannel(client, additional))
+            console.log(`Adding Role From File. Role:${additional.roleID}, Channel:${additional.channelID}`)
+        }
+        //it WAS in the enmap, so grab the most recent message from the enmap and add it to the data from the file
+        else {
+            additional.messageID = channelStorage.get(additional.channelID).messageID
+            channels.set(additional.channelID, new PagerChannel(client, additional))
+        }
     });
     // load matching from the guilds
     // for each guild
@@ -44,7 +59,7 @@ client.once('ready', () => {
                     if (role.name == stripHyphen(channel.name)) {
                         // if the channel already has a role matched
                         if (!channels.has(channel.id)) {
-                            channels.set(channel.id, new PagerChannel({ channelID: channel.id, roleID: role.id }));
+                            channels.set(channel.id, new PagerChannel(client, { channelID: channel.id, roleID: role.id }));
                         }
                         console.log(`Adding Role:${guild.roles.get(role.id).name} to ${channel.name}`);
                     }
@@ -63,6 +78,7 @@ client.on('message', message => {
         if (channels.has(message.channel.id)) {
             message.channel.send(channels.get(message.channel.id).toString()).then((newMessage) => {
                 channels.get(message.channel.id).lastmessage = newMessage;
+                channelStorage.set(message.channel.id, channels.get(message.channel.id).toEnmap())
             });
         }
 
