@@ -28,6 +28,13 @@ const channelStorage = new Enmap({ name: "PagerChannels" });
 const channels = new Discord.Collection();
 
 
+const responseObject = {
+    "!gryffindor": "\nYou might belong in Gryffindor,\nWhere dwell the brave at heart,\nTheir daring, nerve, and chivalry\nSet Gryffindors apart.",
+    "!ravenclaw": "\nOr yet in wise old Ravenclaw,\nIf you've a ready mind,\nWhere those of wit and learning,\nWill always find their kind.",
+    "!hufflepuff": "\nYou might belong in Hufflepuff,\nWhere they are just and loyal,\nThose patient Hufflepuffs are true,\nAnd unafraid of toil.",
+    "!slytherin": "\nOr perhaps in Slytherin,\nYou'll make your real friends,\nThose cunning folk use any means,\nTo achieve their ends."
+}
+
 client.on('guildMemberAdd', async(guildMember) => {
     //TODO: Send Welcome message with details on what to do, ask for what regions they'd like to be in, offer map
 });
@@ -45,6 +52,10 @@ client.on('message', message => {
         }
     }
 
+    /**Easter Egg Stuff */
+    if (responseObject[message.content]) {
+        message.reply(responseObject[message.content]);
+    }
 });
 client.once('ready', async() => {
     //Load from Enmap
