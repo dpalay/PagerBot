@@ -23,8 +23,8 @@ function stripHyphen(string) {
     return string.split('-').join("")
 }
 
-/** @type {Discord.Collection<Discord.Snowflake, PagerChannel>} */
 const channelStorage = new Enmap({ name: "PagerChannels" });
+/** @type {Discord.Collection<Discord.Snowflake, PagerChannel>} */
 const channels = new Discord.Collection();
 
 
