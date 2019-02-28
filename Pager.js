@@ -31,6 +31,21 @@ const channels = new Discord.Collection();
 client.on('guildMemberAdd', async(guildMember) => {
     //TODO: Send Welcome message with details on what to do, ask for what regions they'd like to be in, offer map
 });
+client.on('message', message => {
+    if (false /* message is in the sortinghat channel */ ) {
+
+    } else if (message.content) {
+        if (message.author.bot) return;
+        if (message.content.startsWith("!") || message.content.startsWith("?") || message.content.startsWith(".")) return;
+        if (channels.has(message.channel.id)) {
+            message.channel.send(channels.get(message.channel.id).toString()).then((newMessage) => {
+                channels.get(message.channel.id).lastmessage = newMessage;
+                channelStorage.set(message.channel.id, channels.get(message.channel.id).toEnmap())
+            });
+        }
+    }
+
+});
 client.once('ready', async() => {
     //Load from Enmap
     await channelStorage.defer;
@@ -73,19 +88,5 @@ client.once('ready', async() => {
     console.log('Pager is ready!');
 });
 
-
-client.on('message', message => {
-    if (message.content) {
-        if (message.author.bot) return;
-        if (message.content.startsWith("!") || message.content.startsWith("?") || message.content.startsWith(".")) return;
-        if (channels.has(message.channel.id)) {
-            message.channel.send(channels.get(message.channel.id).toString()).then((newMessage) => {
-                channels.get(message.channel.id).lastmessage = newMessage;
-                channelStorage.set(message.channel.id, channels.get(message.channel.id).toEnmap())
-            });
-        }
-
-    }
-});
 
 client.login(process.env.TOKEN);
