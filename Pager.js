@@ -9,7 +9,7 @@ if (result.error) {
 
 // EVENTS TO DISABLE TO SAVE MEMORY AND CPU
 const eventsToDisable = ['channelCreate', 'channelDelete', 'channelPinsUpdate', 'channelUpdate', 'clientUserGuildSettingsUpdate', 'clientUserSettingsUpdate',
-    'disconnect', 'emojiCreate', 'emojiDelete', 'emojiUpdate', 'guildBanAdd', 'guildBanRemove', 'guildCreate', 'guildDelete', 'guildMemberAdd',
+    'disconnect', 'emojiCreate', 'emojiDelete', 'emojiUpdate', 'guildBanAdd', 'guildBanRemove', 'guildCreate', 'guildDelete',
     'guildMemberAvailable', 'guildMembersChunk', 'guildMemberSpeaking', 'guildMemberUpdate', 'guildUnavailable', 'guildUpdate', 'messageDelete',
     'messageDeleteBulk', 'messageReactionRemove', 'messageReactionRemoveAll', 'messageUpdate', 'presenceUpdate', 'reconnecting', 'resume',
     'roleCreate', 'roleDelete', 'roleUpdate', 'typingStart', 'typingStop', 'userNoteUpdate', 'userUpdate', 'voiceStateUpdate'
@@ -28,6 +28,9 @@ const channelStorage = new Enmap({ name: "PagerChannels" });
 const channels = new Discord.Collection();
 
 
+client.on('guildMemberAdd', async(guildMember) => {
+    //TODO: Send Welcome message with details on what to do, ask for what regions they'd like to be in, offer map
+});
 client.once('ready', async() => {
     //Load from Enmap
     await channelStorage.defer;
