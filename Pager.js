@@ -19,8 +19,16 @@ const Discord = require("discord.js");
 const client = new Discord.Client({ disabledEvents: eventsToDisable });
 
 
-function stripHyphen(string) {
-    return string.split('-').join("")
+function stripHyphenAndWhiteSpace(string) {
+    return string.replace(/[\s -]/g, "")
+}
+
+/**
+ * 
+ * @param {Discord.GuildMember} user 
+ */
+function houseAssigned(guildMember) {
+
 }
 
 const channelStorage = new Enmap({ name: "PagerChannels" });
@@ -38,11 +46,22 @@ const responseObject = {
 client.on('guildMemberAdd', async(guildMember) => {
     //TODO: Send Welcome message with details on what to do, ask for what regions they'd like to be in, offer map
 });
-client.on('message', message => {
-    if (false /* message is in the sortinghat channel */ ) {
 
+client.on('message', message => {
+    if (message.author.bot) { return };
+    if (message.channel.id === process.env.sortingHatChannel && message.content) {
+        let input = stripHyphenAndWhiteSpace(message.content.toLowerCase())
+            //TODO SortingHat Stuff
+        if (input === 'sortme') {
+            console.log(`[SortingHat]:\tsortme command for ${message.author.name}[${message.author.id}]`)
+
+        };
+        if (input.startsWith(process.env.addRole)) {
+
+        };
+        if (input.startsWith(process.env.removeRole)) {};
+        return;
     } else if (message.content) {
-        if (message.author.bot) return;
         if (message.content.startsWith("!") || message.content.startsWith("?") || message.content.startsWith(".")) return;
         if (channels.has(message.channel.id)) {
             message.channel.send(channels.get(message.channel.id).toString()).then((newMessage) => {
@@ -58,8 +77,9 @@ client.on('message', message => {
     }
 });
 client.once('ready', async() => {
-    //Load from Enmap
-    await channelStorage.defer;
+    client.user.setActivity('Hhhmmmm. Very interesting...');
+    await Promise.all(client.guilds.map(guild => guild.fetchMembers()).push(channelStorage.defer))
+
     channelStorage.forEach(channelData => channels.set(channelData.channelID, new PagerChannel(client, channelData)));
 
     // Load new custom values from the file
@@ -85,7 +105,7 @@ client.once('ready', async() => {
                 // for each role in the guild
                 guild.roles.forEach((role) => {
                     // if the role matches the channel
-                    if (role.name == stripHyphen(channel.name)) {
+                    if (role.name == stripHyphenAndWhiteSpace(channel.name)) {
                         // if the channel already has a role matched
                         if (!channels.has(channel.id)) {
                             channels.set(channel.id, new PagerChannel(client, { channelID: channel.id, roleID: role.id }));

@@ -1,5 +1,5 @@
 module.exports = [
     // {channelID: "Channel ID", roleID: "Role ID", message: "Message using $role$ and/or $channel$"},
-    { channelID: "1234123", roleID: "343243241", message: "Ping for the admin channel. $role$" } //#channel-name-for-documentation   
+    { channelID: "1234123", accessRoleID: "343243241", raidRoleID: "", message: "Ping for the admin channel. $role$", locked: false, lockMessage:`Please contact a moderator for permission to join this region`  } //#channel-name-for-documentation   
 ]
  
