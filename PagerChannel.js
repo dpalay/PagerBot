@@ -1,18 +1,20 @@
 class PagerChannel {
 
     /**
-     * 
-     * @param {string} channelID ID for the channel in discord
-     * @param {string} roleID associated role
-     * @param {string} message Message to display.  use $role$ to represent role id and $channel$ to represent channel id
+     * @param {Discord.Client} client
+     * @param {{channelID: string, raidRoleID: string, :accessRoleID: string, message: string, messageID: string, locked: boolean, lockedMessage: string}}
      */
-    constructor(client, { channelID = "", roleID = "", message = `New message! $role$`, messageID = "" }) {
 
+
+    constructor(client, { channelID = "", raidRoleID = "", accessRoleID = "", message = `New message! $role$`, messageID = "", locked = false, lockedMessage = "" }) {
         this.client = client
         this.channelID = channelID;
-        this.roleID = roleID;
-        this.message = message.replace("$role$", `<@&${roleID}>`).replace("$channel$", `<#${channelID}>`);
+        this.accessRoleID = accessRoleID;
+        this.raidRoleID = raidRoleID;
+        this.message = message.replace("$role$", `<@&${raidRoleID}>`).replace("$channel$", `<#${channelID}>`);
         this.messageID = messageID;
+        this.locked = locked;
+        this.lockedMessage = lockedMessage;
         this._lastmessage;
         if (messageID) { this.client.channels.get(this.channelID).fetchMessage(this.messageID).then((message) => this.lastmessage = message).catch(err => console.error(err)); }
     }
@@ -23,7 +25,16 @@ class PagerChannel {
     }
 
     toEnmap() {
-        return { channelID: this.channelID, roleID: this.roleID, message: this.message, messageID: this.lastmessage.id }
+        return {
+            channelID: this.channelID,
+            channelNameTemp: this.client.channels.get(this.channelID).name,
+            accessRoleID: this.accessRoleID,
+            raidRoleID: this.raidRoleID,
+            message: this.message,
+            messageID: this.lastmessage.id,
+            locked: this.locked,
+            lockedMessage: this.lockedMessage
+        }
     }
 
     get lastmessage() {
