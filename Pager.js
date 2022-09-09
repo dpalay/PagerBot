@@ -7,16 +7,8 @@ if (result.error) {
     throw result.error
 }
 
-// EVENTS TO DISABLE TO SAVE MEMORY AND CPU
-const eventsToDisable = ['channelCreate', 'channelDelete', 'channelPinsUpdate', 'channelUpdate', 'clientUserGuildSettingsUpdate', 'clientUserSettingsUpdate',
-    'disconnect', 'emojiCreate', 'emojiDelete', 'emojiUpdate', 'guildBanAdd', 'guildBanRemove', 'guildCreate', 'guildDelete', 'guildMemberAdd',
-    'guildMemberAvailable', 'guildMembersChunk', 'guildMemberSpeaking', 'guildMemberUpdate', 'guildUnavailable', 'guildUpdate', 'messageDelete',
-    'messageDeleteBulk', 'messageReactionRemove', 'messageReactionRemoveAll', 'messageUpdate', 'presenceUpdate', 'reconnecting', 'resume',
-    'roleCreate', 'roleDelete', 'roleUpdate', 'typingStart', 'typingStop', 'userNoteUpdate', 'userUpdate', 'voiceStateUpdate'
-];
-
 const Discord = require("discord.js");
-const client = new Discord.Client({ disabledEvents: eventsToDisable });
+const client = new Discord.Client({ intents: ["Guilds", "GuildMessages", "MessageContent"] });
 
 
 function stripHyphen(string) {
@@ -28,7 +20,7 @@ const channelStorage = new Enmap({ name: "PagerChannels" });
 const channels = new Discord.Collection();
 
 
-client.once('ready', async() => {
+client.once('ready', async () => {
     //Load from Enmap
     await channelStorage.defer;
     channelStorage.forEach(channelData => channels.set(channelData.channelID, new PagerChannel(client, channelData)));
@@ -48,13 +40,13 @@ client.once('ready', async() => {
     });
     // load matching from the guilds
     // for each guild
-    client.guilds.forEach((guild) => {
+    client.guilds.cache.forEach((guild) => {
         // for each channel
-        guild.channels.forEach((channel) => {
+        guild.channels.cache.forEach((channel) => {
             // if the channel isn't already paired with a role
             if (!channels.has(channel.id)) {
                 // for each role in the guild
-                guild.roles.forEach((role) => {
+                guild.roles.cache.forEach((role) => {
                     // if the role matches the channel
                     if (role.name == stripHyphen(channel.name)) {
                         // if the channel already has a role matched
@@ -71,7 +63,7 @@ client.once('ready', async() => {
 });
 
 
-client.on('message', message => {
+client.on('messageCreate', message => {
     if (message.content) {
         if (message.author.bot) return;
         if (message.content.startsWith("!") || message.content.startsWith("?") || message.content.startsWith(".")) return;
