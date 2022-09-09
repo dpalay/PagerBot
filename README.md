@@ -15,4 +15,4 @@ Tested using node `18.7.0` and npm `8.15.0`.
 
  - `cp .env.example .env` and add your Discord bot token.
  - `cp AdditionalChanToRole.js.example AdditionalChanToRole.js` and set channels/roles/messages.
- - `node Pajer.js` to run
+ - `node Pager.js` to run.
