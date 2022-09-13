@@ -14,7 +14,7 @@ class PagerChannel {
         this.message = message.replace("$role$", `<@&${roleID}>`).replace("$channel$", `<#${channelID}>`);
         this.messageID = messageID;
         this._lastmessage;
-        if (messageID) { this.client.channels.get(this.channelID).fetchMessage(this.messageID).then((message) => this.lastmessage = message).catch(err => console.error(err)); }
+        if (messageID) { this.client.channels.cache.get(this.channelID).messages.fetch(this.messageID).then((message) => this.lastmessage = message).catch(err => console.error(err)); }
     }
 
 
